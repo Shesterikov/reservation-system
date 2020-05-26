@@ -43,13 +43,13 @@ restaurantController.storeTicket = function(req, res, next) {
 
 restaurantController.updateTicket = function (req, res, next) {
   const { name, purchases } = req.body;
-  const { restaurantId, ticketId } = req.params;
+  const { ticketId, restaurantId } = req.params;
 
-  Ticket.update({ name, purchases }, { where: { id: ticketId, restaurantId } })
+  Ticket.update({ name, purchases }, { where: { id: ticketId, restaurantId }, returning: true, plain: true })
     .then((ticket) =>
-      res.status(201).json({ data: ticket, message: "Success" })
+      res.status(201).json({ data: ticket[1], message: "Success" })
     )
-    .catch((err) => res.status(500).json({ message: "Error" + err }));
+    .catch((err) => res.status(500).json({ message: "Error" }));
 }
 
 restaurantController.destroyTicket = function (req, res, next) {
