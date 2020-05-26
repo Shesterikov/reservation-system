@@ -5,4 +5,3 @@ indexController.getApiVersion = function (req, res, next) {
 }
 
 module.exports = indexController;
-  
