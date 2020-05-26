@@ -1,7 +1,9 @@
 const sequelize = require("../db/connection");
 const Ticket = require("../models/Ticket");
 
-async function setTicketAsPurchased(req, res, next) {
+const purchaseController = {};
+
+purchaseController.setTicketAsPurchased = function (req, res, next) {
   const { ticketId } = req.params;
 
   //   const t = await ;
@@ -47,6 +49,4 @@ async function setTicketAsPurchased(req, res, next) {
   //     .catch((err) => res.status(500).json({ message: "Error" + err }));
 }
 
-module.exports = {
-  setTicketAsPurchased,
-};
+module.exports = purchaseController

@@ -1,9 +1,11 @@
 const Ticket = require("../models/Ticket");
 const Restaurant = require("../models/Restaurant");
 
+const restaurantController = {};
+
 const userId = "c8eaf5b0-9ea7-11ea-a356-618d80ca4026";
 
-async function getRestaurants(req, res, next) {
+restaurantController.getRestaurants = function (req, res, next) {
   Restaurant.findAll()
     .then((restaurants) =>
       res.status(201).json({ data: restaurants, message: "Success" })
@@ -11,7 +13,7 @@ async function getRestaurants(req, res, next) {
     .catch((err) => res.status(500).json({ message: "Error" + err }));
 }
 
-async function storeRestaurant(req, res, next) {
+restaurantController.storeRestaurant = function (req, res, next) {
   const { name } = req.body;
 
   Restaurant.create({
@@ -24,7 +26,7 @@ async function storeRestaurant(req, res, next) {
     .catch((err) => res.status(500).json({ message: "Error" + err }));
 }
 
-async function storeTicket(req, res, next) {
+restaurantController.storeTicket = function(req, res, next) {
   const { name, purchases } = req.body;
   const { restaurantId } = req.params;
 
@@ -39,7 +41,7 @@ async function storeTicket(req, res, next) {
     .catch((err) => res.status(500).json({ message: "Error" + err }));
 }
 
-async function updateTicket(req, res, next) {
+restaurantController.updateTicket = function (req, res, next) {
   const { name, purchases } = req.body;
   const { restaurantId, ticketId } = req.params;
 
@@ -50,7 +52,7 @@ async function updateTicket(req, res, next) {
     .catch((err) => res.status(500).json({ message: "Error" + err }));
 }
 
-async function destroyTicket(req, res, next) {
+restaurantController.destroyTicket = function (req, res, next) {
     const { restaurantId, ticketId } = req.params;
   
     Ticket.destroy({ where: { id: ticketId, restaurantId } })
@@ -60,10 +62,4 @@ async function destroyTicket(req, res, next) {
       .catch((err) => res.status(500).json({ message: "Error" + err }));
   }
 
-module.exports = {
-    getRestaurants,
-    storeRestaurant,
-    storeTicket,
-    updateTicket,
-    destroyTicket
-};
+module.exports = restaurantController;

@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const { getApiVersion } = require("../controllers/homeController");
-const { getTickets, getTicket } = require("../controllers/ticketController");
-const { setTicketAsPurchased } = require("../controllers/purchaseController");
+const indexController = require("../controllers/homeController");
+const ticketController = require("../controllers/ticketController");
+const purchaseController = require("../controllers/purchaseController");
 
-router.get('/', getApiVersion);
-router.get('/tickets/', getTickets);
-router.get('/tickets/:ticketId', getTicket);
-router.get('/purchase/:ticketId', setTicketAsPurchased);
+router.get('/', indexController.getApiVersion);
+router.get('/tickets/', ticketController.getTickets);
+router.get('/tickets/:ticketId', ticketController.getTicket);
+router.get('/purchase/:ticketId', purchaseController.setTicketAsPurchased);
 
 module.exports = router;
