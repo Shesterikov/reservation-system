@@ -1,16 +1,52 @@
+const sequelize = require("../db/connection");
+const Ticket = require("../models/Ticket");
+
 async function setTicketAsPurchased(req, res, next) {
-  try {
-    const id = req.params.id;
-    const data = await Ticket.findByPk(id);
+  const { ticketId } = req.params;
 
-    res.status(201).json({ data, message: 'Success' });
+  //   const t = await ;
 
-  } catch (error) {
-    res.status(500).json({ message: "Error" });
-  }
+  sequelize
+    .transaction()
+    .then((t) => {
+      Ticket.decrement(
+        "purchases",
+        {
+          where: {
+            id: ticketId,
+            purchases: sequelize.where(sequelize.literal("purchases"), ">", 0),
+          },
+        },
+        { transaction: t }
+      )
+        .then((data) => res.status(201).json({ data, message: "Success" }))
+        .catch((err) => res.status(500).json({ message: "Error" + err }));
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Error" + err });
+    });
+
+  // Ticket.findByPk(ticketId)
+  //   .then((ticket) => {
+  //     ticket
+  //       .decrement("purchases", )
+  //       .then((data) => {
+  //           t.commit();
+  //           res.status(201).json({ data, message: "Success" });
+  //       })
+  //   })
+  //   .catch((err) => res.status(500).json({ message: "Error" + err }));
+
+  //   Ticket.decrement("purchases", {
+  //     where: {
+  //       id: ticketId,
+  //       purchases: sequelize.where(sequelize.literal("purchases"), ">", 0),
+  //     },
+  //   }, { transaction: t })
+  //     .then((data) => res.status(201).json({ data, message: "Success" }))
+  //     .catch((err) => res.status(500).json({ message: "Error" + err }));
 }
 
 module.exports = {
-    setTicketAsPurchased,
+  setTicketAsPurchased,
 };
-  

@@ -7,9 +7,9 @@ async function getTickets(req, res, next) {
 }
 
 async function getTicket(req, res, next) {
-  const { id } = req.params;
+  const { ticketId } = req.params;
 
-  Ticket.findByPk(id)
+  Ticket.findByPk(ticketId)
     .then((data) => res.status(201).json({ data, message: "Success" }))
     .catch((err) => res.status(500).json({ message: "Error" + err }));
 }

@@ -7,7 +7,7 @@ const { setTicketAsPurchased } = require("../controllers/purchaseController");
 
 router.get('/', getApiVersion);
 router.get('/tickets/', getTickets);
-router.get('/tickets/:id', getTicket);
-router.get('/purchase/:id', setTicketAsPurchased);
+router.get('/tickets/:ticketId', getTicket);
+router.get('/purchase/:ticketId', setTicketAsPurchased);
 
 module.exports = router;
