@@ -3,25 +3,36 @@ const Ticket = require("../models/Ticket");
 
 const purchaseController = {};
 
-purchaseController.setTicketAsPurchased = function (req, res, next) {
+purchaseController.setTicketAsPurchased = async function (req, res, next) {
   const { ticketId } = req.params;
 
-  Ticket.findOne({
-    where: {
-      id: ticketId,
-      purchases: sequelize.where(sequelize.literal("purchases"), ">", 0),
-    },
-    lock: true,
-    skipLocked: true,
-  })
-    .then((ticket) =>
+  const transaction = await sequelize.transaction();
+
+  try {
+    Ticket.findOne({
+      where: {
+        id: ticketId,
+        purchases: sequelize.where(sequelize.literal("purchases"), ">", 0),
+      },
+      lock: true,
+      skipLocked: true,
+    })
+    .then((ticket) => {
       ticket
-        .decrement("purchases")
-        .then((ticket) =>
-          res.status(201).json({ data: ticket, message: "Success" })
-        )
-    )
-    .catch((err) => res.status(500).json({ message: "Error" }));
+        .decrement("purchases", {transaction})
+        .then((ticket) => {
+          transaction.commit();
+          res.status(201).json({ data: ticket, message: "Success" });
+        })
+    })
+    .catch((err) => {
+      transaction.rollback();
+      res.status(500).json({ message: "Error" });
+    })
+  } catch (err) {
+    transaction.rollback();
+    res.status(500).json({ message: "Error" })
+  }
 };
 
 module.exports = purchaseController;
